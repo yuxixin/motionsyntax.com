@@ -5,135 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MotionSyntax</title>
   <meta name="description" content="MotionSyntax Technology (Changchun) Co., Ltd. official website.">
-  <style>
-    :root {
-      color-scheme: light;
-      --ink: #111827;
-      --muted: #5f6673;
-      --line: #e6e8ec;
-      --paper: #ffffff;
-      --bg: #f7f8fa;
-      --accent: #16715f;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      letter-spacing: 0;
-    }
-
-    main {
-      min-height: calc(100vh - 72px);
-      display: grid;
-      place-items: center;
-      padding: 48px 20px;
-    }
-
-    .panel {
-      width: min(720px, 100%);
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: clamp(28px, 5vw, 48px);
-      box-shadow: 0 18px 44px rgba(17, 24, 39, 0.06);
-    }
-
-    h1 {
-      margin: 0 0 28px;
-      font-size: clamp(36px, 7vw, 56px);
-      line-height: 1;
-      font-weight: 720;
-      color: var(--ink);
-    }
-
-    dl {
-      display: grid;
-      grid-template-columns: minmax(96px, 160px) 1fr;
-      gap: 16px 22px;
-      margin: 0;
-      padding: 0;
-    }
-
-    dt {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    dd {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.5;
-      font-weight: 520;
-      word-break: break-word;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    footer {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-      border-top: 1px solid var(--line);
-      background: var(--paper);
-    }
-
-    @media (max-width: 560px) {
-      dl {
-        grid-template-columns: 1fr;
-        gap: 6px 0;
-      }
-
-      dd {
-        margin-bottom: 12px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
+  <header class="site-header">
+    <a class="brand" href="/">MotionSyntax</a>
+    <nav aria-label="Primary navigation">
+      <a href="/shotaxis/">ShotAxis</a>
+      <a href="/support/">Support</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </header>
+
   <main>
-    <section class="panel" aria-labelledby="company-title">
-      <h1 id="company-title">MotionSyntax</h1>
-      <dl>
-        <dt>中文主体</dt>
-        <dd>动律科技（长春）有限公司</dd>
+    <section class="hero">
+      <p class="eyebrow">MotionSyntax Technology</p>
+      <h1>MotionSyntax</h1>
+      <p class="lead">动律科技（长春）有限公司专注于运动动作分析、AI 训练反馈和移动端训练工具研发。</p>
+      <div class="actions">
+        <a class="button primary" href="/shotaxis/">了解 ShotAxis</a>
+        <a class="button" href="/contact/">联系 MotionSyntax</a>
+      </div>
+    </section>
 
-        <dt>英文名称</dt>
-        <dd>MotionSyntax Technology (Changchun) Co., Ltd.</dd>
+    <section class="grid two">
+      <article class="card">
+        <h2>公司信息</h2>
+        <dl class="facts">
+          <dt>中文主体</dt>
+          <dd>动律科技（长春）有限公司</dd>
+          <dt>英文名称</dt>
+          <dd>MotionSyntax Technology (Changchun) Co., Ltd.</dd>
+          <dt>统一社会信用代码</dt>
+          <dd>91220100MAKDXTMH37</dd>
+          <dt>联系邮箱</dt>
+          <dd><a href="mailto:support@motionsyntax.com">support@motionsyntax.com</a></dd>
+        </dl>
+      </article>
 
-        <dt>统一社会信用代码</dt>
-        <dd>91220100MAKDXTMH37</dd>
-
-        <dt>联系邮箱</dt>
-        <dd><a href="mailto:support@motionsyntax.com">support@motionsyntax.com</a></dd>
-
-        <dt>产品</dt>
-        <dd>ShotAxis</dd>
-      </dl>
+      <article class="card accent">
+        <p class="eyebrow">Product</p>
+        <h2>ShotAxis</h2>
+        <p>ShotAxis 是由 MotionSyntax 开发的 AI 台球训练 App，面向台球、桌球和斯诺克爱好者，帮助用户理解每一杆的出杆速度、方向偏移和动作表现。</p>
+        <a class="text-link" href="/shotaxis/">查看产品介绍</a>
+      </article>
     </section>
   </main>
 
-  <footer>
-    © 2026 动律科技（长春）有限公司 / MotionSyntax Technology (Changchun) Co., Ltd.
+  <footer class="site-footer">
+    <nav aria-label="Footer navigation">
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <a href="/support/">Support</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+    <p>© 2026 动律科技（长春）有限公司 / MotionSyntax Technology (Changchun) Co., Ltd.</p>
   </footer>
 </body>
 </html>

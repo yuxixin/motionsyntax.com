@@ -5,6 +5,12 @@ Static official website for `https://www.motionsyntax.com/`.
 ## Contents
 
 - `index.html`: company homepage.
+- `shotaxis/index.html`: ShotAxis product introduction.
+- `privacy/index.html`: ShotAxis privacy policy.
+- `terms/index.html`: ShotAxis terms of use.
+- `support/index.html`: ShotAxis support page.
+- `contact/index.html`: MotionSyntax contact page.
+- `assets/site.css`: shared website styles.
 - `CNAME`: GitHub Pages custom domain, fixed to `www.motionsyntax.com`.
 
 ## GitHub Pages Setup
