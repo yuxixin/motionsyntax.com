@@ -32,6 +32,6 @@ If the DNS provider requires a trailing dot, use:
 yuxixin.github.io.
 ```
 
-## Pending Field
+## Company Registration
 
-The unified social credit code is currently set to `待补充` in `index.html`.
+The unified social credit code is currently set to `91220100MAKDXTMH37` in `index.html`.
