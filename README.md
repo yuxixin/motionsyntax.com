@@ -41,3 +41,4 @@ yuxixin.github.io.
 ## Company Registration
 
 The unified social credit code is currently set to `91220100MAKDXTMH37` in `index.html`.
+The registered address is published in Chinese and English on the homepage and contact page.
