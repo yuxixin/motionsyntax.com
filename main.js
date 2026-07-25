@@ -12,11 +12,21 @@
     if (hero instanceof HTMLElement) {
       const h = Math.max(hero.offsetHeight, 1);
       const fade = Math.max(0, 1 - window.scrollY / (h * 0.72));
-      hero.style.setProperty("--hero-fade", String(fade));
+      // Only fade foreground copy — never scale/repaint the felt scene.
+      hero.style.setProperty("--hero-fade", fade.toFixed(3));
     }
   };
+  let scrollQueued = false;
+  const onScrollRaf = () => {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(() => {
+      scrollQueued = false;
+      onScroll();
+    });
+  };
   onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("scroll", onScrollRaf, { passive: true });
 
   // Split brand letters
   const split = document.querySelector("[data-split]");
@@ -90,49 +100,64 @@
     }
   }
 
-  // Hero pointer spotlight + parallax
+  // Hero pointer spotlight only (no felt parallax / CSS-var gradient repaints).
   const spotlight = document.getElementById("hero-spotlight");
-  const parallaxLayers = document.querySelectorAll("[data-parallax]");
   let ptrX = window.innerWidth * 0.5;
-  let ptrY = window.innerHeight * 0.42;
+  let ptrY = window.innerHeight * 0.36;
   let targetX = ptrX;
   let targetY = ptrY;
+  let ptrRaf = 0;
+  let ptrActive = false;
 
-  if (hero && !reduceMotion && !coarsePointer) {
+  const placeSpotlight = (x, y) => {
+    if (!(spotlight instanceof HTMLElement)) return;
+    spotlight.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+  };
+
+  const smoothPtr = () => {
+    ptrX += (targetX - ptrX) * 0.14;
+    ptrY += (targetY - ptrY) * 0.14;
+    placeSpotlight(ptrX, ptrY);
+    const dx = Math.abs(targetX - ptrX);
+    const dy = Math.abs(targetY - ptrY);
+    if (dx > 0.4 || dy > 0.4) {
+      ptrRaf = requestAnimationFrame(smoothPtr);
+    } else {
+      ptrActive = false;
+      ptrRaf = 0;
+      placeSpotlight(targetX, targetY);
+    }
+  };
+
+  if (hero && !reduceMotion && !coarsePointer && spotlight) {
+    placeSpotlight(ptrX, ptrY);
     hero.addEventListener(
       "pointermove",
       (event) => {
         const rect = hero.getBoundingClientRect();
         targetX = event.clientX - rect.left;
         targetY = event.clientY - rect.top;
-        const px = (targetX / rect.width) * 100;
-        const py = (targetY / rect.height) * 100;
-        hero.style.setProperty("--ptr-x", `${px}%`);
-        hero.style.setProperty("--ptr-y", `${py}%`);
+        if (!ptrActive) {
+          ptrActive = true;
+          ptrRaf = requestAnimationFrame(smoothPtr);
+        }
       },
       { passive: true }
     );
-
-    const smoothPtr = () => {
-      ptrX += (targetX - ptrX) * 0.12;
-      ptrY += (targetY - ptrY) * 0.12;
-      if (spotlight) {
-        spotlight.style.left = `${ptrX}px`;
-        spotlight.style.top = `${ptrY}px`;
-      }
-      const nx = (ptrX / Math.max(window.innerWidth, 1) - 0.5) * 2;
-      const ny = (ptrY / Math.max(window.innerHeight, 1) - 0.5) * 2;
-      parallaxLayers.forEach((layer) => {
-        if (!(layer instanceof HTMLElement)) return;
-        const depth = Number(layer.dataset.parallax || "0.04");
-        layer.style.transform = `translate3d(${(-nx * depth * 40).toFixed(2)}px, ${(-ny * depth * 28).toFixed(2)}px, 0)`;
-      });
-      requestAnimationFrame(smoothPtr);
-    };
-    requestAnimationFrame(smoothPtr);
-  } else if (hero) {
-    hero.style.setProperty("--ptr-x", "50%");
-    hero.style.setProperty("--ptr-y", "36%");
+    hero.addEventListener(
+      "pointerleave",
+      () => {
+        targetX = (hero.getBoundingClientRect().width || window.innerWidth) * 0.5;
+        targetY = (hero.getBoundingClientRect().height || window.innerHeight) * 0.36;
+        if (!ptrActive) {
+          ptrActive = true;
+          ptrRaf = requestAnimationFrame(smoothPtr);
+        }
+      },
+      { passive: true }
+    );
+  } else if (spotlight) {
+    placeSpotlight(ptrX, ptrY);
   }
 
   // Hero FX canvas: cue ball + trail + chalk dust + impact
