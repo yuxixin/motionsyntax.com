@@ -137,8 +137,10 @@
   }
 
   // Hero FX canvas: cue ball + trail + chalk dust + impact
+  // Ball lane is measured from `.hero__axis` so CSS line and path stay locked.
   const canvas = /** @type {HTMLCanvasElement | null} */ (document.getElementById("hero-fx"));
   const impact = document.getElementById("hero-impact");
+  const axis = document.querySelector(".hero__axis");
 
   if (canvas && !reduceMotion) {
     const ctx = canvas.getContext("2d");
@@ -153,20 +155,49 @@
       let fired = false;
       let running = true;
       let raf = 0;
+      /** @type {{ x0: number; x1: number; y: number; arc: number; ballR: number }} */
+      let lane = { x0: 0, x1: 0, y: 0, arc: 0, ballR: 9 };
+
+      const narrowNow = () => window.matchMedia("(max-width: 720px)").matches;
+
+      const measureLane = () => {
+        const narrow = narrowNow();
+        if (hero instanceof HTMLElement && axis instanceof HTMLElement) {
+          const heroRect = hero.getBoundingClientRect();
+          const axisRect = axis.getBoundingClientRect();
+          const sx = w / Math.max(heroRect.width, 1);
+          const sy = h / Math.max(heroRect.height, 1);
+          lane.x0 = (axisRect.left - heroRect.left) * sx;
+          lane.x1 = (axisRect.right - heroRect.left) * sx;
+          lane.y = (axisRect.top + axisRect.height / 2 - heroRect.top) * sy;
+        } else {
+          lane.x0 = w * 0.08;
+          lane.x1 = w * 0.86;
+          lane.y = h * 0.38;
+        }
+        // Keep the arc subtle on phones so the ball rides the white line.
+        lane.arc = narrow ? Math.min(14, h * 0.022) : h * 0.08;
+        lane.ballR = narrow ? 6.5 : 9;
+      };
 
       const resize = () => {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const bounds = hero instanceof HTMLElement ? hero.getBoundingClientRect() : null;
-        w = Math.max(1, Math.floor(bounds?.width || window.innerWidth));
-        h = Math.max(1, Math.floor(bounds?.height || window.innerHeight));
+        if (hero instanceof HTMLElement) {
+          w = Math.max(1, Math.floor(hero.clientWidth));
+          h = Math.max(1, Math.floor(hero.clientHeight));
+        } else {
+          w = Math.max(1, Math.floor(window.innerWidth));
+          h = Math.max(1, Math.floor(window.innerHeight));
+        }
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
         canvas.style.width = `${w}px`;
         canvas.style.height = `${h}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        measureLane();
         dust = [];
-        const dustCount = isNarrow
-          ? Math.min(36, Math.floor(w / 28))
+        const dustCount = narrowNow()
+          ? Math.min(28, Math.floor(w / 30))
           : Math.min(90, Math.floor(w / 16));
         for (let i = 0; i < dustCount; i++) {
           dust.push({
@@ -179,25 +210,25 @@
             life: 2,
           });
         }
+        trail = [];
+        fired = false;
       };
 
-      /** Path for the cue “shot” across the felt */
+      /** Path locked to the white axis lane */
       const pathAt = (u) => {
-        const x0 = w * 0.08;
-        const x1 = w * 0.86;
-        const x = x0 + (x1 - x0) * u;
+        const x = lane.x0 + (lane.x1 - lane.x0) * u;
         const y =
-          h * 0.38 +
-          Math.sin(u * Math.PI) * h * -0.08 +
-          Math.sin(u * Math.PI * 2.2) * h * 0.015;
+          lane.y +
+          Math.sin(u * Math.PI) * -lane.arc +
+          Math.sin(u * Math.PI * 2.2) * lane.arc * 0.16;
         return { x, y };
       };
 
       const burst = (x, y) => {
-        const count = isNarrow ? 22 : 48;
+        const count = narrowNow() ? 18 : 48;
         for (let i = 0; i < count; i++) {
           const ang = Math.random() * Math.PI * 2;
-          const sp = 1.5 + Math.random() * 5;
+          const sp = 1.2 + Math.random() * (narrowNow() ? 3.2 : 5);
           dust.push({
             x,
             y,
@@ -208,9 +239,12 @@
             life: 0.95,
           });
         }
+        if (hero instanceof HTMLElement) {
+          hero.style.setProperty("--impact-x", `${x}px`);
+          hero.style.setProperty("--impact-y", `${y}px`);
+        }
         if (impact) {
           impact.classList.remove("is-flash");
-          // force reflow for restart
           void impact.offsetWidth;
           impact.classList.add("is-flash");
         }
@@ -221,7 +255,6 @@
         const elapsed = (now - t0) / 1000;
         ctx.clearRect(0, 0, w, h);
 
-        // Ambient dust
         for (const p of dust) {
           p.x += p.vx;
           p.y += p.vy;
@@ -244,12 +277,10 @@
         }
         dust = dust.filter((p) => p.life > 0.02);
 
-        // Shot cycle every ~4.2s
         const cycle = 4.2;
         const phase = (elapsed % cycle) / cycle;
         let u = 0;
         if (phase < 0.55) {
-          // ease-in-out strike
           const local = phase / 0.55;
           u = local < 0.5 ? 2 * local * local : 1 - Math.pow(-2 * local + 2, 2) / 2;
           fired = false;
@@ -264,51 +295,59 @@
 
         const pos = pathAt(u);
         trail.push({ x: pos.x, y: pos.y, a: 1 });
-        if (trail.length > 28) trail.shift();
+        const trailMax = narrowNow() ? 18 : 28;
+        if (trail.length > trailMax) trail.shift();
 
-        // Trail glow
         for (let i = 1; i < trail.length; i++) {
           const a = trail[i - 1];
           const b = trail[i];
           const alpha = (i / trail.length) * 0.55;
           ctx.beginPath();
           ctx.strokeStyle = `rgba(150, 255, 200, ${alpha})`;
-          ctx.lineWidth = 2 + (i / trail.length) * 4;
+          ctx.lineWidth = (narrowNow() ? 1.4 : 2) + (i / trail.length) * (narrowNow() ? 2.6 : 4);
           ctx.lineCap = "round";
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
           ctx.stroke();
         }
 
-        // Cue ball
-        const grd = ctx.createRadialGradient(pos.x - 4, pos.y - 5, 2, pos.x, pos.y, 14);
+        const r = lane.ballR;
+        const grd = ctx.createRadialGradient(pos.x - r * 0.45, pos.y - r * 0.55, r * 0.2, pos.x, pos.y, r * 1.55);
         grd.addColorStop(0, "#ffffff");
         grd.addColorStop(0.45, "#e8fff2");
         grd.addColorStop(1, "#7dceb0");
         ctx.beginPath();
         ctx.fillStyle = grd;
         ctx.shadowColor = "rgba(140, 255, 200, 0.85)";
-        ctx.shadowBlur = 22;
-        ctx.arc(pos.x, pos.y, 9, 0, Math.PI * 2);
+        ctx.shadowBlur = narrowNow() ? 14 : 22;
+        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // Axis marker on ball
         ctx.beginPath();
         ctx.fillStyle = "rgba(0, 80, 50, 0.55)";
-        ctx.arc(pos.x + 2, pos.y + 1, 2.2, 0, Math.PI * 2);
+        ctx.arc(pos.x + r * 0.22, pos.y + r * 0.12, r * 0.24, 0, Math.PI * 2);
         ctx.fill();
 
         raf = requestAnimationFrame(tick);
       };
 
       resize();
+      // Re-measure after layout settles (mobile address bar / font load).
+      requestAnimationFrame(() => {
+        measureLane();
+        requestAnimationFrame(measureLane);
+      });
       t0 = performance.now();
       raf = requestAnimationFrame(tick);
       window.addEventListener("resize", resize, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", resize, { passive: true });
+      }
       document.addEventListener("visibilitychange", () => {
         running = document.visibilityState === "visible";
         if (running) {
+          measureLane();
           t0 = performance.now();
           raf = requestAnimationFrame(tick);
         } else {

@@ -248,6 +248,10 @@ a {
   color: var(--white);
   background: #000805;
   --hero-fade: 1;
+  --axis-y: 38%;
+  --axis-inset: 6%;
+  --impact-x: 78%;
+  --impact-y: 40%;
 }
 
 .hero__scene {
@@ -322,9 +326,9 @@ a {
 
 .hero__axis {
   position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 38%;
+  left: var(--axis-inset);
+  right: var(--axis-inset);
+  top: var(--axis-y);
   height: 2px;
   pointer-events: none;
 }
@@ -385,7 +389,11 @@ a {
 .hero__impact {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 78% 40%, rgba(180, 255, 220, 0.35), transparent 35%);
+  background: radial-gradient(
+    circle at var(--impact-x) var(--impact-y),
+    rgba(180, 255, 220, 0.35),
+    transparent 35%
+  );
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: screen;
@@ -1352,6 +1360,8 @@ a {
     min-height: 100svh;
     min-height: 100dvh;
     align-items: stretch;
+    --axis-y: 30%;
+    --axis-inset: 5%;
   }
 
   .hero__scene {
@@ -1360,9 +1370,12 @@ a {
   }
 
   .hero__axis {
-    top: 28%;
-    left: 4%;
-    right: 4%;
+    height: 1.5px;
+  }
+
+  .hero__axis-core {
+    height: 1px;
+    top: 0.25px;
   }
 
   .hero__spotlight {
