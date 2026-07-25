@@ -243,15 +243,15 @@ a {
   position: relative;
   min-height: 100svh;
   display: grid;
-  align-items: end;
+  align-items: center;
   overflow: clip;
   color: var(--white);
   background: #000805;
   --hero-fade: 1;
-  --axis-y: 38%;
+  --axis-y: 34%;
   --axis-inset: 6%;
   --impact-x: 78%;
-  --impact-y: 40%;
+  --impact-y: 36%;
 }
 
 .hero__scene {
@@ -421,7 +421,7 @@ a {
   max-width: var(--max);
   width: 100%;
   margin: 0 auto;
-  padding: calc(var(--header-h) + 56px) 20px 80px;
+  padding: calc(var(--header-h) + 24px) 20px 48px;
   opacity: var(--hero-fade);
 }
 
@@ -1360,7 +1360,7 @@ a {
     min-height: 100svh;
     min-height: 100dvh;
     align-items: stretch;
-    --axis-y: 30%;
+    --axis-y: 22%;
     --axis-inset: 5%;
   }
 
@@ -1397,15 +1397,15 @@ a {
   .hero__content {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     box-sizing: border-box;
     min-height: 100%;
     width: 100%;
     max-width: 100%;
     padding:
-      calc(var(--header-h) + env(safe-area-inset-top, 0px) + 20px)
+      calc(var(--header-h) + env(safe-area-inset-top, 0px) + 10px)
       max(16px, env(safe-area-inset-right))
-      calc(28px + env(safe-area-inset-bottom, 0px))
+      calc(20px + env(safe-area-inset-bottom, 0px))
       max(16px, env(safe-area-inset-left));
   }
 
@@ -1414,36 +1414,36 @@ a {
   }
 
   .hero__eyebrow {
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     letter-spacing: 0.16em;
     font-size: 0.72rem;
   }
 
   .hero__brand-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
   .hero__icon-wrap {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
   }
 
   .hero__icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
   }
 
   .hero__icon-ring {
-    inset: -8px;
-    border-radius: 22px;
+    inset: -6px;
+    border-radius: 18px;
   }
 
   .hero__brand {
-    font-size: clamp(2.55rem, 13vw, 3.4rem);
+    font-size: clamp(2.4rem, 11vw, 3.1rem);
     line-height: 0.95;
     max-width: 100%;
   }
@@ -1455,30 +1455,30 @@ a {
 
   .hero__tagline {
     max-width: none;
-    font-size: clamp(1.28rem, 5.8vw, 1.7rem);
-    margin-bottom: 12px;
+    font-size: clamp(1.2rem, 5.4vw, 1.55rem);
+    margin-bottom: 10px;
   }
 
   .hero__support {
-    margin-bottom: 22px;
-    font-size: 0.98rem;
-    line-height: 1.55;
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   .hero__actions {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .hero__actions .btn {
     width: 100%;
-    min-height: 48px;
+    min-height: 46px;
   }
 
   .hero__meta {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     line-height: 1.4;
   }
 

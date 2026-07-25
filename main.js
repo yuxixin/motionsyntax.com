@@ -3,7 +3,6 @@
   if (year) year.textContent = String(new Date().getFullYear());
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isNarrow = window.matchMedia("(max-width: 720px)").matches;
   const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
   const header = document.getElementById("site-header");
   const hero = document.querySelector("[data-hero]");
