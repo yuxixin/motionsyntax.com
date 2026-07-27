@@ -1360,8 +1360,8 @@ a {
   }
 
   .hero {
-    min-height: 100svh;
-    min-height: 100dvh;
+    /* 内容驱动高度：不再强制 100dvh，消除首屏下方的人为留白，下一节自然衔接。 */
+    min-height: auto;
     align-items: stretch;
     --axis-y: 22%;
     --axis-inset: 5%;
@@ -1397,9 +1397,9 @@ a {
   .hero__content {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    /* 跟随 Hero 内容高度，避免占满整屏后下方留白。 */
+    justify-content: center;
     box-sizing: border-box;
-    min-height: 100%;
     width: 100%;
     max-width: 100%;
     padding:
